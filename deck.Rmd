@@ -1,0 +1,149 @@
+---
+title: "End-to-end reproducible analytics with R"
+author: "Kevin Kuo"
+date: "June 21, 2015"
+output: ioslides_presentation
+---
+
+## The analytics process
+
+Looks something like:
+
+```{R, echo = FALSE}
+library(DiagrammeR)
+DiagrammeR("
+    graph LR;
+      Strategy --> Data;
+      Data --> Model;
+      Model --> Action;
+")
+```
+
+## The analytics process
+
+Often, it's closer to:
+
+```{R, echo = FALSE}
+DiagrammeR("
+    graph LR;
+      Strategy --> Data;
+      Strategy --> Model;
+      Strategy --> Action;
+      Data --> Strategy;
+      Data --> Model;
+      Data --> Action;
+      Model --> Strategy;
+      Model --> Data;
+      Model --> Action;
+      Action --> Strategy;
+      Action --> Data;
+      Action --> Model
+")
+```
+
+## Takeaways
+
+- Reproducible analytics is really important to help us keep things straight.
+
+> - You can draw flow diagrams with R!
+
+# Case Study 1: Tornados data exploration
+
+## Tornados data exploration
+
+- Storm events data (2010 ~ 2013) from NOAA (National Oceanic and Atmospheric Administration)
+
+```{R}
+list.files("download/")
+```
+
+## Tornados data exploration
+
+```{R, message = FALSE}
+library(dplyr)
+library(readr)
+read_csv("download/stormdata_2010.csv") %>%
+  names
+```
+
+## Tornados data exploration
+
+```{R, message = FALSE, warning = FALSE}
+source("R/tornado.R")
+stormData %>%
+  filter(type == "Tornado") %>%
+  head
+```
+
+## Tornados data exploration
+
+- Here's a quick plot of daily tornado *counts*:
+
+```{R, echo = FALSE}
+dygraph(stormTS) %>%
+ dyOptions(stackedGraph = TRUE)
+```
+
+## Tornados data exploration
+
+```{R}
+stormData %>%
+  filter(type == "Tornado",
+         date >= ymd("2011-4-25"), date <= ymd("2011-4-28")) %>%
+  group_by(state) %>%
+  summarize(count = n(),
+            deaths = sum(deaths)) %>%
+  arrange(desc(count)) %>%
+  head
+```
+
+# Case study 2: Insurer-Reinsurer relationships
+
+## Insurer-Reinsurer relationships
+
+- We'll work with ~~fake~~ illustrative data:
+
+```{R, message = FALSE, warning = FALSE}
+source("R/network-graph.R")
+sample_n(companies, 5)
+sample_n(treaties, 5)
+```
+
+## Insurer-reinsurer relationships
+
+```{R, results = "asis"}
+forceNetwork(Links = treaties, Nodes = companies, 
+             Source = "cedant", Target = "reinsurer",
+             Value = "premiumCeded", NodeID = "company", Nodesize = "size",
+             Group = "group", opacity = 0.8,
+             colourScale = "d3.scale.category10()")
+```
+
+# Case study 3: Predictive modeling
+
+## Predictive modeling
+
+- For this case study, we'll use data from the MASS package.
+
+```{R, include = FALSE}
+source("R/glm-example.R")
+```
+
+```{R}
+head(Insurance2, 10)
+```
+
+- We'll fit poisson regression models to predict claim count and validate results graphically
+
+## Predictive modeling
+
+- Here's a 3-fold relativity table
+
+```{R, message = FALSE, warning = FALSE, echo = FALSE}
+library(DT)
+relativities %>% 
+  datatable %>% 
+  formatRound(2:(nFolds + 1), digits = 2)
+```
+
+## Predictive modeling
