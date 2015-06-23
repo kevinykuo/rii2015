@@ -10,7 +10,8 @@ library(dygraphs)
 #   glimpse
 
 colsToExtract <- c("BEGIN_YEARMONTH", "BEGIN_DAY", "EVENT_TYPE", "STATE",
-                   "DEATHS_DIRECT", "DEATHS_INDIRECT", "BEGIN_LAT", "BEGIN_LON")
+                   "DEATHS_DIRECT", "DEATHS_INDIRECT", "BEGIN_LAT", "BEGIN_LON",
+                   "CZ_NAME")
 stormData <- list.files("download/") %>%
   grep("^storm", ., value = TRUE) %>%
   lapply((function(x) read_csv(paste0("download/", x)) %>%
@@ -21,7 +22,8 @@ stormData <- list.files("download/") %>%
                        state = ~ STATE,
                        deaths = ~ DEATHS_DIRECT + DEATHS_INDIRECT,
                        lat = ~ as.integer(BEGIN_LAT),
-                       long = ~ as.integer(BEGIN_LON)))
+                       long = ~ as.integer(BEGIN_LON),
+                       county = ~ paste(CZ_NAME, STATE, sep = ", ")))
          ) %>%
   bind_rows
 
@@ -50,9 +52,11 @@ tornadoMapData <- stormData %>%
   filter(type == "Tornado", deaths > 0,
          date >= ymd("2011-4-25"), date <= ymd("2011-4-28")) %>%
   group_by(lat, long) %>%
-  summarize(deaths = sum(deaths))
+  summarize(deaths = sum(deaths),
+            county = first(county))
 deathsPopup <- paste0("<strong>Deaths: </strong>", 
-                      tornadoMapData$deaths)
+                      tornadoMapData$deaths, "<br />",
+                      tornadoMapData$county)
 # tornadoMapData %>%
 #   leaflet() %>%
 #   addTiles() %>%

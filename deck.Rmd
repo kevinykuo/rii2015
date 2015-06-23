@@ -27,6 +27,11 @@ DiagrammeR("
 
 ## The analytics process
 
+<!---
+This slide may not render correctly on the first try.
+Refreshing browser seems to fix the issue.
+-->
+
 Often, it's closer to:
 
 ```{R, echo = FALSE}
@@ -46,6 +51,8 @@ DiagrammeR("
 
 - Reproducible analytics is really important to help us keep things straight.
 
+> - All of the code used to generate this slide deck is available at https://github.com/kykuo/rii2015
+
 > - You can draw flow diagrams with R!
 
 # Case Study 1: Tornado data exploration
@@ -60,8 +67,11 @@ list.files("download/")
 
 ## Tornado data exploration {.smaller}
 
-```{R, message = FALSE}
+```{R, include = FALSE}
 library(readr)
+```
+
+```{R, message = FALSE}
 "download/stormdata_2010.csv" %>%
   read_csv %>%
   names
@@ -69,8 +79,11 @@ library(readr)
 
 ## Tornado data exploration
 
-```{R, message = FALSE, warning = FALSE}
+```{R, include = FALSE}
 source("R/tornado.R")
+```
+
+```{R, message = FALSE, warning = FALSE}
 stormData %>%
   filter(type == "Tornado") %>%
   head
@@ -117,8 +130,11 @@ tornadoMapData %>%
 
 - We'll work with ~~fake~~ illustrative data:
 
-```{R, message = FALSE, warning = FALSE}
+```{R, include = FALSE}
 source("R/network-graph.R")
+```
+
+```{R, message = FALSE, warning = FALSE}
 sample_n(companies, 5)
 sample_n(treaties, 5)
 ```
@@ -137,7 +153,7 @@ forceNetwork(Links = treaties, Nodes = companies,
 
 ## Predictive modeling
 
-- For this case study, we'll use data from the MASS package.
+- For this case study, we'll use the `Insurance` dataset from the MASS package.
 
 ```{R, include = FALSE}
 source("R/glm-example.R")
