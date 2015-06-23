@@ -87,3 +87,10 @@ liftChartData <- xvalResults[[1]]$actualAndPredicted %>%
 # ggplot(liftChartData, aes(bin, value)) + geom_bar(stat = "identity", aes(fill = variable), 
 #                                          position = "dodge")
 
+# library(rcdimple)
+# liftChartData %>%
+#   dimple(x = c("bin", "variable"), y = "value", type = "bar", groups = "variable") %>%
+#   xAxis(type = "addCategoryAxis", title = "Predicted quantile") %>%
+#   yAxis(type = "addMeasureAxis", title = "Value") %>%
+#   add_legend() %>%
+#   add_title("Out of sample lift chart")

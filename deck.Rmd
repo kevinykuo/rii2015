@@ -198,7 +198,12 @@ relativityPlots[3]
 
 - Here is an out-of-sample predicted vs. actual plot, which shows how the model performs in each quantile range of the predicted values:
 
-```{R, echo = FALSE}
-ggplot(liftChartData, aes(bin, value)) + geom_bar(stat = "identity", aes(fill = variable), 
-                                         position = "dodge")
+```{R, echo = FALSE, message = FALSE}
+library(rcdimple)
+liftChartData %>%
+  dimple(x = c("bin", "variable"), y = "value", type = "bar", groups = "variable") %>%
+  xAxis(type = "addCategoryAxis", title = "Predicted quantile") %>%
+  yAxis(type = "addMeasureAxis", title = "Value") %>%
+  add_legend() %>%
+  add_title("Out of sample lift chart")
 ```
