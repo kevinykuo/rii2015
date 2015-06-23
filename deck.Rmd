@@ -2,8 +2,14 @@
 title: "End-to-end reproducible analytics with R"
 author: "Kevin Kuo"
 date: "June 21, 2015"
-output: ioslides_presentation
+output:
+  ioslides_presentation:
+    smaller: true
 ---
+
+```{R, include = FALSE}
+library(magrittr)
+```
 
 ## The analytics process
 
@@ -27,16 +33,11 @@ Often, it's closer to:
 DiagrammeR("
     graph LR;
       Strategy --> Data;
-      Strategy --> Model;
-      Strategy --> Action;
       Data --> Strategy;
       Data --> Model;
-      Data --> Action;
       Model --> Strategy;
-      Model --> Data;
       Model --> Action;
       Action --> Strategy;
-      Action --> Data;
       Action --> Model
 ")
 ```
@@ -57,12 +58,12 @@ DiagrammeR("
 list.files("download/")
 ```
 
-## Tornados data exploration
+## Tornados data exploration {.smaller}
 
 ```{R, message = FALSE}
-library(dplyr)
 library(readr)
-read_csv("download/stormdata_2010.csv") %>%
+"download/stormdata_2010.csv" %>%
+  read_csv %>%
   names
 ```
 
@@ -99,7 +100,7 @@ stormData %>%
 
 # Case study 2: Insurer-Reinsurer relationships
 
-## Insurer-Reinsurer relationships
+## Insurer-Reinsurer relationships {.smaller}
 
 - We'll work with ~~fake~~ illustrative data:
 
@@ -129,15 +130,15 @@ forceNetwork(Links = treaties, Nodes = companies,
 source("R/glm-example.R")
 ```
 
-```{R}
+```{R, echo = FALSE}
 head(Insurance2, 10)
 ```
 
 - We'll fit poisson regression models to predict claim count and validate results graphically
 
-## Predictive modeling
+## Predictive modeling {.smaller}
 
-- Here's a 3-fold relativity table
+- Here's a 3-fold relativity table. If the model is *stable* we would expect the estimates to be similar across different samples.
 
 ```{R, message = FALSE, warning = FALSE, echo = FALSE}
 library(DT)
@@ -147,3 +148,28 @@ relativities %>%
 ```
 
 ## Predictive modeling
+
+```{R, echo = FALSE}
+relativityPlots[1]
+```
+
+## Predictive modeling
+
+```{R, echo = FALSE}
+relativityPlots[2]
+```
+
+## Predictive modeling
+
+```{R, echo = FALSE}
+relativityPlots[3]
+```
+
+## Predictive modeling
+
+- Here is an out-of-sample predicted vs. actual plot, which shows how the model performs in each quantile range of the predicted values:
+
+```{R, echo = FALSE}
+ggplot(liftChartData, aes(bin, value)) + geom_bar(stat = "identity", aes(fill = variable), 
+                                         position = "dodge")
+```

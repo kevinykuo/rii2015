@@ -1,3 +1,4 @@
+library(dplyr)
 library(lubridate)
 library(tidyr)
 library(readr)
@@ -9,7 +10,7 @@ library(dygraphs)
 #   glimpse
 
 colsToExtract <- c("BEGIN_YEARMONTH", "BEGIN_DAY", "EVENT_TYPE", "STATE",
-                   "DEATHS_DIRECT", "DEATHS_INDIRECT")
+                   "DEATHS_DIRECT", "DEATHS_INDIRECT", "BEGIN_LAT", "BEGIN_LON")
 stormData <- list.files("download/") %>%
   grep("^storm", ., value = TRUE) %>%
   lapply((function(x) read_csv(paste0("download/", x)) %>%
@@ -18,7 +19,9 @@ stormData <- list.files("download/") %>%
                          as.POSIXct(format = "%Y%m-%d"),
                        type = ~ EVENT_TYPE,
                        state = ~ STATE,
-                       deaths = ~ DEATHS_DIRECT + DEATHS_INDIRECT))
+                       deaths = ~ DEATHS_DIRECT + DEATHS_INDIRECT,
+                       lat = ~ as.integer(BEGIN_LAT),
+                       long = ~ as.integer(BEGIN_LON)))
          ) %>%
   bind_rows
 
@@ -41,3 +44,17 @@ outbreakSummary <- stormData %>%
   arrange(desc(count)) %>%
   head
 
+
+library(leaflet)
+tornadoMapData <- stormData %>%
+  filter(type == "Tornado", deaths > 0,
+         date >= ymd("2011-4-25"), date <= ymd("2011-4-28")) %>%
+  group_by(lat, long) %>%
+  summarize(deaths = sum(deaths))
+deathsPopup <- paste0("<strong>Deaths: </strong>", 
+                      tornadoMapData$deaths)
+tornadoMapData %>%
+  leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(lng = ~ long, lat = ~ lat, radius = ~ deaths,
+                   fillOpacity = 0.2, color = "red", stroke = FALSE, popup = deathsPopup)
