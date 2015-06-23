@@ -1,7 +1,7 @@
 ---
 title: "End-to-end reproducible analytics with R"
 author: "Kevin Kuo"
-date: "June 21, 2015"
+date: "June 29, 2015"
 output:
   ioslides_presentation:
     smaller: true
@@ -48,9 +48,9 @@ DiagrammeR("
 
 > - You can draw flow diagrams with R!
 
-# Case Study 1: Tornados data exploration
+# Case Study 1: Tornado data exploration
 
-## Tornados data exploration
+## Tornado data exploration
 
 - Storm events data (2010 ~ 2013) from NOAA (National Oceanic and Atmospheric Administration)
 
@@ -58,7 +58,7 @@ DiagrammeR("
 list.files("download/")
 ```
 
-## Tornados data exploration {.smaller}
+## Tornado data exploration {.smaller}
 
 ```{R, message = FALSE}
 library(readr)
@@ -67,7 +67,7 @@ library(readr)
   names
 ```
 
-## Tornados data exploration
+## Tornado data exploration
 
 ```{R, message = FALSE, warning = FALSE}
 source("R/tornado.R")
@@ -76,7 +76,7 @@ stormData %>%
   head
 ```
 
-## Tornados data exploration
+## Tornado data exploration
 
 - Here's a quick plot of daily tornado *counts*:
 
@@ -85,7 +85,7 @@ dygraph(stormTS) %>%
  dyOptions(stackedGraph = TRUE)
 ```
 
-## Tornados data exploration
+## Tornado data exploration
 
 ```{R}
 stormData %>%
@@ -96,6 +96,19 @@ stormData %>%
             deaths = sum(deaths)) %>%
   arrange(desc(count)) %>%
   head
+```
+
+## Tornado data exploration
+
+- Here is a map of the tornados during the outbreak:
+
+```{R, echo = FALSE}
+library(leaflet)
+tornadoMapData %>%
+  leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(lng = ~ long, lat = ~ lat, radius = ~ deaths,
+                   fillOpacity = 0.2, color = "red", stroke = FALSE, popup = deathsPopup)
 ```
 
 # Case study 2: Insurer-Reinsurer relationships

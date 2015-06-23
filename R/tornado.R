@@ -53,8 +53,8 @@ tornadoMapData <- stormData %>%
   summarize(deaths = sum(deaths))
 deathsPopup <- paste0("<strong>Deaths: </strong>", 
                       tornadoMapData$deaths)
-tornadoMapData %>%
-  leaflet() %>%
-  addTiles() %>%
-  addCircleMarkers(lng = ~ long, lat = ~ lat, radius = ~ deaths,
-                   fillOpacity = 0.2, color = "red", stroke = FALSE, popup = deathsPopup)
+# tornadoMapData %>%
+#   leaflet() %>%
+#   addTiles() %>%
+#   addCircleMarkers(lng = ~ long, lat = ~ lat, radius = ~ deaths,
+#                    fillOpacity = 0.2, color = "red", stroke = FALSE, popup = deathsPopup)
