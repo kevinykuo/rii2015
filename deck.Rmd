@@ -53,6 +53,7 @@ DiagrammeR("
 
 > - All of the code used to generate this slide deck is available at https://github.com/kykuo/rii2015
 
+
 > - You can draw flow diagrams with R!
 
 # Case Study 1: Tornado data exploration
@@ -71,7 +72,7 @@ list.files("download/")
 library(readr)
 ```
 
-```{R, message = FALSE}
+```{R, message = FALSE, warning = FALSE}
 "download/stormdata_2010.csv" %>%
   read_csv %>%
   names
