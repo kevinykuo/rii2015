@@ -17,7 +17,7 @@ stormData <- list.files("download/") %>%
   lapply((function(x) read_csv(paste0("download/", x)) %>%
             select_(~ one_of(colsToExtract)) %>%
             transmute_(date = ~ paste(BEGIN_YEARMONTH, BEGIN_DAY, sep = "-") %>%
-                         as.POSIXct(format = "%Y%m-%d"),
+                         as.POSIXct(format = "%Y%m-%d", tz = "GMT"),
                        type = ~ EVENT_TYPE,
                        state = ~ STATE,
                        deaths = ~ DEATHS_DIRECT + DEATHS_INDIRECT,
